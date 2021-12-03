@@ -1,0 +1,21 @@
+﻿@page "/"
+
+@using TelerikBlazorApp2.Models
+@using TelerikBlazorApp2.Services
+@using TelerikBlazorApp2.Components.Tiles
+
+@inject DashboardDataService _dataService
+
+<div>
+    <TelerikTileLayout Height="605px"
+                       Width="800px"
+                       Reorderable="true">
+        <TileLayoutItems>
+            <TileLayoutItem HeaderText="Telerik Grid Export Functionality">
+                <Content>
+                    <ExportFunctionality   />
+                </Content>
+            </TileLayoutItem>         
+        </TileLayoutItems>
+    </TelerikTileLayout>
+</div>
