@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
+﻿using ExportService;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TelerikBlazorApp2.Services;
 
 namespace TelerikBlazorApp2
@@ -29,9 +24,10 @@ namespace TelerikBlazorApp2
             services.AddRazorPages();
             services.AddServerSideBlazor(o => o.DetailedErrors = true);
             services.AddTelerikBlazor();
-            services.AddSingleton<DashboardDataService>();
-           // services.AddSingleton<WeatherForecastService>();
-           // services.AddScoped<PdfExportService>();
+            services.AddScoped<IDocumentExporter<PdfDocument>, PdfDocumentExporter>();
+            services.AddScoped<IDocumentExporter<XlsDocument>, XlsDocumentExporter>();
+            services.AddScoped<IDocumentStore, JSRuntimeDocumentStore>();
+            services.AddScoped<MockDataService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

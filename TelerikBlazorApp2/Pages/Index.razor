@@ -2,9 +2,7 @@
 
 @using TelerikBlazorApp2.Models
 @using TelerikBlazorApp2.Services
-@using TelerikBlazorApp2.Components.Tiles
-
-@inject DashboardDataService _dataService
+@using TelerikBlazorApp2.Components
 
 <div>
     <TelerikTileLayout Height="605px"
@@ -13,9 +11,9 @@
         <TileLayoutItems>
             <TileLayoutItem HeaderText="Telerik Grid Export Functionality">
                 <Content>
-                    <ExportFunctionality   />
+                    <ExportFunctionality />
                 </Content>
-            </TileLayoutItem>         
+            </TileLayoutItem>
         </TileLayoutItems>
     </TelerikTileLayout>
 </div>

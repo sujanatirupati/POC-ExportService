@@ -1,34 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
-using System.IO;
-using Telerik.Windows.Documents.Fixed.FormatProviders.Pdf;
-using Telerik.Windows.Documents.Fixed.FormatProviders.Pdf.Export;
-using Telerik.Windows.Documents.Fixed.Model;
-using Telerik.Windows.Documents.Fixed.Model.ColorSpaces;
-using Telerik.Windows.Documents.Fixed.Model.Editing;
-using Telerik.Windows.Documents.Fixed.Model.Editing.Flow;
-using Telerik.Windows.Documents.Fixed.Model.Fonts;
-using Telerik.Windows.Documents.Fixed.Model.Graphics;
-using Telerik.Windows.Documents.Fixed.Model.Editing.Tables;
-using System.Threading.Tasks;
-using Telerik.DataSource;
-using Telerik.DataSource.Extensions;
-using System.Reflection;
-using Telerik.Windows.Documents.Spreadsheet.Model;
 using System.Data;
-using Telerik.Blazor.Components;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telerik.Windows.Documents.Spreadsheet.FormatProviders;
+using Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx;
+using Telerik.Windows.Documents.Spreadsheet.Model;
 
 namespace ExportService
 {
-    public class ExcelProcessingExporter
+    public sealed class XlsDocumentExporter : IDocumentExporter<XlsDocument>
     {
+        public async Task<XlsDocument> ExportAsync<T>(TelerikGridData<T> gridData)
+        {
+            return new XlsDocument(await ExportData(gridData));
+        }
+
         public async Task<byte[]> ExportData<T>(TelerikGridData<T> gridData)
         {
             Workbook workbook = CreateWorkbookFromGrid<T>(gridData);
-            Telerik.Windows.Documents.Spreadsheet.FormatProviders.IBinaryWorkbookFormatProvider formatProvider =
-                           new Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.Xlsx.XlsxFormatProvider();
+            IBinaryWorkbookFormatProvider formatProvider = new XlsxFormatProvider();
 
             // use your own Workbook instance here
             byte[] fileToDownloadAsByteArray = formatProvider.Export(workbook);
@@ -38,14 +30,14 @@ namespace ExportService
 
         public Workbook CreateWorkbookFromGrid<T>(TelerikGridData<T> gridData)
         {
-            List<T> items = (List<T>)gridData.grid.Data;
-            var columnHeaders = gridData.dicColumnHeaders;
+            List<T> items = gridData.Grid.Data.ToList();
+            var columnHeaders = gridData.ColumnHeaders;
 
             DataTable dataTable = new DataTable(typeof(T).Name);
             Type typeParameterType = typeof(T);
             var fieldsList = typeParameterType.GetProperties();
             List<string> ColumnFields = fieldsList.Select(c => c.Name).ToList();
-            var columnsState = gridData.grid.GetState().ColumnStates;
+            var columnsState = gridData.Grid.GetState().ColumnStates;
             Dictionary<int, string> dicColumns = new Dictionary<int, string>();
             int index = 0;
             foreach (var columnState in columnsState)
@@ -71,11 +63,9 @@ namespace ExportService
                 dataTable.Rows.Add(values);
             }
 
-            Telerik.Windows.Documents.Spreadsheet.FormatProviders.DataTableFormatProvider provider = new
-                  Telerik.Windows.Documents.Spreadsheet.FormatProviders.DataTableFormatProvider();
-
-            Workbook workbook = new Workbook();
-            Worksheet worksheet = workbook.Worksheets.Add();
+            var provider = new DataTableFormatProvider();
+            var workbook = new Workbook();
+            var worksheet = workbook.Worksheets.Add();
 
             provider.Import(dataTable, worksheet);
 
@@ -90,6 +80,6 @@ namespace ExportService
                 return propertyInfo.GetValue(item);
             }
             return null;
-        }       
+        }
     }
 }

@@ -1,45 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using Telerik.Documents.Primitives;
 using Telerik.Windows.Documents.Fixed.FormatProviders.Pdf;
-using Telerik.Windows.Documents.Fixed.FormatProviders.Pdf.Export;
 using Telerik.Windows.Documents.Fixed.Model;
 using Telerik.Windows.Documents.Fixed.Model.ColorSpaces;
 using Telerik.Windows.Documents.Fixed.Model.Editing;
-using Telerik.Windows.Documents.Fixed.Model.Editing.Flow;
-using Telerik.Windows.Documents.Fixed.Model.Fonts;
-using Telerik.Windows.Documents.Fixed.Model.Graphics;
 using Telerik.Windows.Documents.Fixed.Model.Editing.Tables;
-using System.Threading.Tasks;
-using Telerik.DataSource;
-using Telerik.DataSource.Extensions;
-using System.Reflection;
-using Telerik.Windows.Documents.Spreadsheet.Model;
-using System.Data;
-using Telerik.Blazor.Components;
-using System.ComponentModel.DataAnnotations;
-using Telerik.Documents.Primitives;
 
 namespace ExportService
 {
-    public class PdfProcessingExporter
+    public sealed class PdfDocumentExporter : IDocumentExporter<PdfDocument>
     {
+        public async Task<PdfDocument> ExportAsync<T>(TelerikGridData<T> gridData)
+        {
+            var data = await ExportData(gridData);
+
+            return new PdfDocument(data);
+        }
+
         public async Task<byte[]> ExportData<T>(TelerikGridData<T> gridData)
         {
-            PdfFormatProvider provider = new PdfFormatProvider();
-
+            var provider = new PdfFormatProvider();
             var document = await GenerateDocumentFromGrid(gridData);
 
-            byte[] fileBytes = null;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                provider.Export(document, ms);
-                fileBytes = ms.ToArray();
-            }
-
-            return await Task.FromResult(fileBytes);
+            using var stream = new MemoryStream();
+            provider.Export(document, stream);
+            return stream.ToArray();
         }
 
         private async Task<RadFixedDocument> GenerateDocumentFromGrid<T>(TelerikGridData<T> gridData)
@@ -55,12 +45,12 @@ namespace ExportService
 
         private async Task<Table> CreateDataTableFromGrid<T>(TelerikGridData<T> gridData)
         {
-            List<T> dataToExport = (List<T>)gridData.grid.Data;
-            var columnHeaders = gridData.dicColumnHeaders;
+            List<T> dataToExport = gridData.Grid.Data.ToList();
+            var columnHeaders = gridData.ColumnHeaders;
             Type typeParameterType = typeof(T);
             var fieldsList = typeParameterType.GetProperties();
             List<string> ColumnFields = fieldsList.Select(c => c.Name).ToList();
-            var columnsState = gridData.grid.GetState().ColumnStates;
+            var columnsState = gridData.Grid.GetState().ColumnStates;
             Dictionary<int, string> dicColumns = new Dictionary<int, string>();
             int index = 0;
             foreach (var columnState in columnsState)
@@ -128,7 +118,7 @@ namespace ExportService
             }
 
             return await Task.FromResult(fileBytes);
-        }     
+        }
 
         private async Task<RadFixedDocument> GenerateDocument<T>(List<T> data)
         {
@@ -179,6 +169,6 @@ namespace ExportService
             }
 
             return await Task.FromResult(table);
-        }      
+        }
     }
 }

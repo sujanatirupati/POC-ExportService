@@ -1,0 +1,30 @@
+﻿@using TelerikBlazorApp2.Models
+
+<div align="right">
+    <TelerikButton Icon ="more-vertical" OnClick="@(() => DrawerRef.ToggleAsync())" />
+    <TelerikDrawer @ref="@DrawerRef" 
+                   @bind-Expanded ="@Expanded"
+                   Data="@Data"
+                   Mode="@DrawerMode.Push"
+                   Position="DrawerPosition.Right"
+                   SelectedItemChanged="((DrawerItem item) => SelectedItemChangedHandler(item))">
+        <ItemTemplate Context="item">
+            <div>@item.Text</div>
+        </ItemTemplate>
+    </TelerikDrawer>
+</div>
+
+<TelerikGrid @ref="GridRef"
+             Data="@GridData"
+             Pageable="true"
+             Sortable="true"
+             Reorderable="true">
+    <GridColumns>
+        <GridColumn Width="100px" Id="ID" Field="@nameof(MockData.Id)" Title="Product Id" />
+        <GridColumn Width="300px" Id="ProductName" Field="@nameof(MockData.ProductName)" Title="Product Name" />
+        <GridColumn Width="100px" Id="UnitsInStock" Field="@nameof(MockData.Units)" Title="Units in Stock" />
+        <GridColumn Width="200px" Id="Price" Field="@nameof(MockData.Price)" Title="Unit Price" />
+        <GridColumn Width="100px" Id="Discontinued" Field="@nameof(MockData.Discontinued)" Title="Discontinued" />
+        <GridColumn Width="300px" Id="FirstReleaseDate" Field="@nameof(MockData.ReleaseDate)" Title="Release Date" />
+    </GridColumns>
+</TelerikGrid>

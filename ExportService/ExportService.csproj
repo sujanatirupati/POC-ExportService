@@ -1,13 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="PdfExporter.cs" />
-    <Compile Remove="RadPdfProcessingExporter.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Telerik.DataSource" Version="2.0.11" />
@@ -18,5 +12,4 @@
     <PackageReference Include="Telerik.Documents.Spreadsheet.FormatProviders.Xls" Version="2021.3.909" />
     <PackageReference Include="Telerik.UI.for.Blazor" Version="2.27.0" />
   </ItemGroup>
-
 </Project>

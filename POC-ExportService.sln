@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExportService", "..\ExportService\ExportService.csproj", "{230330C9-8071-4A73-A4F4-A5A06A28D360}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExportService", "ExportService\ExportService.csproj", "{230330C9-8071-4A73-A4F4-A5A06A28D360}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelerikBlazorApp2", "TelerikBlazorApp2\TelerikBlazorApp2.csproj", "{53B75A79-D46A-4CC7-8FEE-07D50BABF416}"
 EndProject
